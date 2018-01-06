@@ -1,0 +1,20 @@
+{
+  "name": "nimble",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && browserify build/index.js > dist.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "picodom": "1.0.2"
+  },
+  "devDependencies": {
+    "@types/es6-shim": "0.31.35",
+    "browserify": "15.0.0"
+  }
+}

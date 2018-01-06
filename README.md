@@ -1,11 +1,11 @@
 # NimbleJS
-> A tiny, highly debuggable, extensible, UI framework.
+> A tiny, highly debuggable & extensible, UI framework.
 
 
 ## Usage
 
 ```html
-<script src=''></script>
+<script src='https://cdn.rawgit.com/ISNIT0/nimble-js/8b7b70fc/dist.js'></script>
 <div id="frame"></div>
 ```
 

@@ -1,5 +1,5 @@
 # NimbleJS
-> A tiny, highly debuggable & extensible, UI framework.
+> A tiny, highly debuggable & extensible UI framework.
 
 
 ## Usage

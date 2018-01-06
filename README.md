@@ -1,6 +1,7 @@
 # NimbleJS
-> A tiny, highly debuggable & extensible UI framework.
+> A tiny, highly debuggable, extensible data & rendering manager.
 
+A data and rendering manager, so you can focus on writing awesome VDom.
 
 ## Usage
 

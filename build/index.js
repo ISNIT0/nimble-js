@@ -41,7 +41,9 @@ function makeRenderLoop(target, state, renderApp, effectHandlers) {
 exports.makeRenderLoop = makeRenderLoop;
 var nimble = {
     makeRenderLoop: makeRenderLoop,
-    h: h
+    h: h,
+    get: utils_1.get,
+    set: utils_1.set
 };
 if (window && !window['nimble']) {
     window['nimble'] = nimble;

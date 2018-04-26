@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ultradom_1 = require("ultradom");
 var dataModEffect_1 = require("./dataModEffect");
 var utils_1 = require("./utils");
+exports.get = utils_1.get;
+exports.set = utils_1.set;
 var effectHandler_1 = require("./effectHandler");
 var virtualHyperscript_1 = require("./virtualHyperscript");
 var h = virtualHyperscript_1.default(ultradom_1.h);

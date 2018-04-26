@@ -58,7 +58,7 @@ const nimble = {
     set
 };
 
-export { makeRenderLoop, h };
+export { makeRenderLoop, h, get, set };
 
 if (window && !(<any>window)['nimble']) {
     (<any>window)['nimble'] = nimble;

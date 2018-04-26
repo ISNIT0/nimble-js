@@ -9,6 +9,9 @@ function effectHandler(done, state, effectHandlers) {
         else {
             console.log("Triggering [" + effects.length + "] effects: ", effects);
         }
+        // TODO: Pretty dataModRequest logging:
+        // data.number   | 1 -> 2
+        // data.name     | undefined -> "Joe"
         var acc = state;
         var dataMods = [];
         var ret = [];

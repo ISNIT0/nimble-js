@@ -72,6 +72,9 @@ function effectHandler(done, state, effectHandlers) {
         else {
             console.log("Triggering [" + effects.length + "] effects: ", effects);
         }
+        // TODO: Pretty dataModRequest logging:
+        // data.number   | 1 -> 2
+        // data.name     | undefined -> "Joe"
         var acc = state;
         var dataMods = [];
         var ret = [];
@@ -287,10 +290,16 @@ exports.bufferWithTime = bufferWithTime;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript
+function isChildren(children) {
+    return !children ||
+        Array.isArray(children) ||
+        typeof children === 'string' ||
+        children.hasOwnProperty('name');
+}
 function makeVirtualHyperscript(uH) {
     return function wrappedHyperscript(tagName, properties, children) {
         var tag, props;
-        if (!children && Array.isArray(properties)) {
+        if (!children && isChildren(properties)) {
             children = properties;
             props = {};
         }

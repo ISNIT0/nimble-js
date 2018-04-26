@@ -3,11 +3,18 @@ export type UH = typeof uH;
 
 //https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript
 
+function isChildren(children: Children[] | Children) {
+    return !children ||
+        Array.isArray(children) ||
+        typeof children === 'string' ||
+        children.hasOwnProperty('name');
+}
+
 export default function makeVirtualHyperscript(uH: UH) {
     return function wrappedHyperscript(tagName: string, properties?: any, children?: Children[] | Children): VNode {
         let tag, props;
 
-        if (!children && Array.isArray(properties)) {
+        if (!children && isChildren(properties)) {
             children = properties;
             props = {};
         }
@@ -15,7 +22,7 @@ export default function makeVirtualHyperscript(uH: UH) {
         props = props || properties || {};
         tag = parseTag(tagName, props);
 
-        
+
 
         return uH(tag, props, children || null);
     }

@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "picodom": "1.0.2"
+    "browser-split": "0.0.1",
+    "ultradom": "3.0.1",
+    "virtual-dom": "2.1.1"
   },
   "devDependencies": {
     "@types/es6-shim": "0.31.35",

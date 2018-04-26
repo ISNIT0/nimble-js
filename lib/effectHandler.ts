@@ -1,9 +1,16 @@
 function effectHandler<State>(done: (state: State, changes: string[]) => void, state: State, effectHandlers: { [kind: string]: EffectDefinition<State> }) {
     const affect = <Affect>function Affect(effects: Effect | Effect[], handler?: (ret: any[]) => void) {
         if (!Array.isArray(effects)) {
+            console.log(`Triggering effect: `, effects);
             effects = [effects];
+        } else {
+            console.log(`Triggering [${effects.length}] effects: `, effects);
         }
-        console.log(`Triggering [${effects.length}] effects: `, effects);
+
+        // TODO: Pretty dataModRequest logging:
+        // data.number   | 1 -> 2
+        // data.name     | undefined -> "Joe"
+
         let acc = state;
         let dataMods = [];
         let ret = [];

@@ -1,9 +1,12 @@
 ///<reference path="./index.d.ts" />
 
-import { h, patch } from 'picodom';
+import { h as uH, render, VNode } from 'ultradom';
 import dataModEffectDefinition from './dataModEffect';
 import { bufferWithTime, deepMerge } from './utils';
 import effectHandler from './effectHandler';
+import makeVirtualHyperscript from './virtualHyperscript';
+
+const h = makeVirtualHyperscript(uH);
 
 function makeRenderLoop<State>(
     target: HTMLElement,
@@ -11,8 +14,10 @@ function makeRenderLoop<State>(
     renderApp: (state: State, affect: Affect, changes: string[]) => VNode,
     effectHandlers: EffectDefinition<State>[] = []
 ): Affect {
-    let node: VNode;
-
+    if(!target) {
+        throw new Error(`Please supply a valid target`);
+    }
+    
     const handlersXKind = deepMerge({}, {
         dataModRequest: dataModEffectDefinition
     },
@@ -31,8 +36,7 @@ function makeRenderLoop<State>(
                 state = newState;
                 const $frame = renderApp(deepMerge({}, state), effectHandler(bufferedUpdateState, state, handlersXKind), changes);
                 if ($frame) {
-                    patch(node, $frame, target);
-                    node = $frame;
+                    render($frame, target);
                 } else {
                     // Not yet ready to render
                 }

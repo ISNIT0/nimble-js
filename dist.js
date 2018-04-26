@@ -66,9 +66,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function effectHandler(done, state, effectHandlers) {
     var affect = function Affect(effects, handler) {
         if (!Array.isArray(effects)) {
+            console.log("Triggering effect: ", effects);
             effects = [effects];
         }
-        console.log("Triggering [" + effects.length + "] effects: ", effects);
+        else {
+            console.log("Triggering [" + effects.length + "] effects: ", effects);
+        }
         var acc = state;
         var dataMods = [];
         var ret = [];
@@ -144,14 +147,18 @@ exports.default = effectHandler;
 "use strict";
 ///<reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-var picodom_1 = require("picodom");
-exports.h = picodom_1.h;
+var ultradom_1 = require("ultradom");
 var dataModEffect_1 = require("./dataModEffect");
 var utils_1 = require("./utils");
 var effectHandler_1 = require("./effectHandler");
+var virtualHyperscript_1 = require("./virtualHyperscript");
+var h = virtualHyperscript_1.default(ultradom_1.h);
+exports.h = h;
 function makeRenderLoop(target, state, renderApp, effectHandlers) {
     if (effectHandlers === void 0) { effectHandlers = []; }
-    var node;
+    if (!target) {
+        throw new Error("Please supply a valid target");
+    }
     var handlersXKind = utils_1.deepMerge({}, {
         dataModRequest: dataModEffect_1.default
     }, effectHandlers.reduce(function (acc, handler) {
@@ -166,8 +173,7 @@ function makeRenderLoop(target, state, renderApp, effectHandlers) {
             state = newState;
             var $frame = renderApp(utils_1.deepMerge({}, state), effectHandler_1.default(bufferedUpdateState, state, handlersXKind), changes);
             if ($frame) {
-                picodom_1.patch(node, $frame, target);
-                node = $frame;
+                ultradom_1.render($frame, target);
             }
             else {
                 // Not yet ready to render
@@ -181,13 +187,13 @@ function makeRenderLoop(target, state, renderApp, effectHandlers) {
 exports.makeRenderLoop = makeRenderLoop;
 var nimble = {
     makeRenderLoop: makeRenderLoop,
-    h: picodom_1.h
+    h: h
 };
 if (window && !window['nimble']) {
     window['nimble'] = nimble;
 }
 
-},{"./dataModEffect":1,"./effectHandler":2,"./utils":4,"picodom":5}],4:[function(require,module,exports){
+},{"./dataModEffect":1,"./effectHandler":2,"./utils":4,"./virtualHyperscript":5,"ultradom":6}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function get(obj, key) {
@@ -278,6 +284,65 @@ function bufferWithTime(func, ms, handler) {
 exports.bufferWithTime = bufferWithTime;
 
 },{}],5:[function(require,module,exports){
-!function(e,r){"object"==typeof exports&&"undefined"!=typeof module?r(exports):"function"==typeof define&&define.amd?define(["exports"],r):r(e.picodom={})}(this,function(e){"use strict";function r(e,r){var n,t=[];for(s=arguments.length;s-- >2;)c.push(arguments[s]);for(;c.length;)if(Array.isArray(n=c.pop()))for(s=n.length;s--;)c.push(n[s]);else null!=n&&!0!==n&&!1!==n&&t.push("number"==typeof n?n+="":n);return"string"==typeof e?{type:e,props:r||{},children:t}:e(r||{},t)}function n(e,r,n,t){for(var o=l(n||(n=document.body),n.children[0],e,r);t=a.pop();)t();return o}function t(e,r){var n={};for(var t in e)n[t]=e[t];for(var t in r)n[t]=r[t];return n}function o(e,r){if("string"==typeof e)var n=document.createTextNode(e);else{var n=(r=r||"svg"===e.type)?document.createElementNS("http://www.w3.org/2000/svg",e.type):document.createElement(e.type);e.props&&e.props.oncreate&&a.push(function(){e.props.oncreate(n)});for(var t=0;t<e.children.length;t++)n.appendChild(o(e.children[t],r));for(var t in e.props)p(n,t,e.props[t])}return n}function p(e,r,n,o){if("key"===r);else if("style"===r)for(var r in t(o,n=n||{}))e.style[r]=n[r]||"";else{try{e[r]=n}catch(e){}"function"!=typeof n&&(n?e.setAttribute(r,n):e.removeAttribute(r))}}function i(e,r,n){for(var o in t(r,n)){var i=n[o],f="value"===o||"checked"===o?e[o]:r[o];i!==f&&p(e,o,i,f)}n&&n.onupdate&&a.push(function(){n.onupdate(e,r)})}function f(e,r,n){function t(){e.removeChild(r)}n&&n.onremove&&"function"==typeof(n=n.onremove(r))?n(t):t()}function u(e){if(e&&e.props)return e.props.key}function l(e,r,n,t,p,s){if(null==n)r=e.insertBefore(o(t,p),r);else if(null!=t.type&&t.type===n.type){i(r,n.props,t.props),p=p||"svg"===t.type;for(var c=t.children.length,a=n.children.length,d={},h=[],v={},y=0;y<a;y++){var g=h[y]=r.childNodes[y],m=n.children[y],b=u(m);null!=b&&(d[b]=[g,m])}for(var y=0,k=0;k<c;){var g=h[y],m=n.children[y],w=t.children[k],b=u(m);if(v[b])y++;else{var x=u(w),A=d[x]||[];null==x?(null==b&&(l(r,g,m,w,p),k++),y++):(b===x?(l(r,A[0],A[1],w,p),y++):A[0]?(r.insertBefore(A[0],g),l(r,A[0],A[1],w,p)):l(r,g,null,w,p),k++,v[x]=w)}}for(;y<a;){var m=n.children[y],b=u(m);null==b&&f(r,h[y],m.props),y++}for(var y in d){var A=d[y],B=A[1];v[B.props.key]||f(r,A[0],B.props)}}else r&&t!==r.nodeValue&&("string"==typeof t&&"string"==typeof n?r.nodeValue=t:(r=e.insertBefore(o(t,p),s=r),f(e,s,n.props)));return r}var s,c=[],a=[];e.h=r,e.patch=n});
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+//https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript
+function makeVirtualHyperscript(uH) {
+    return function wrappedHyperscript(tagName, properties, children) {
+        var tag, props;
+        if (!children && Array.isArray(properties)) {
+            children = properties;
+            props = {};
+        }
+        props = props || properties || {};
+        tag = parseTag(tagName, props);
+        return uH(tag, props, children || null);
+    };
+}
+exports.default = makeVirtualHyperscript;
+var classIdSplit = /([\.#]?[a-zA-Z0-9\u007F-\uFFFF_:-]+)/;
+var notClassId = /^\.|#/;
+function parseTag(tag, props) {
+    if (!tag) {
+        return 'DIV';
+    }
+    var noId = !(props.hasOwnProperty('id'));
+    var tagParts = tag.split(classIdSplit);
+    var tagName = null;
+    if (notClassId.test(tagParts[1])) {
+        tagName = 'DIV';
+    }
+    var classes = [];
+    var part;
+    var type;
+    var i;
+    for (i = 0; i < tagParts.length; i++) {
+        part = tagParts[i];
+        if (!part) {
+            continue;
+        }
+        type = part.charAt(0);
+        if (!tagName) {
+            tagName = part;
+        }
+        else if (type === '.') {
+            classes.push(part.substring(1, part.length));
+        }
+        else if (type === '#' && noId) {
+            props.id = part.substring(1, part.length);
+        }
+    }
+    if (classes.length) {
+        if (props.className) {
+            classes.push(props.className);
+        }
+        props.className = classes.join(' ');
+    }
+    tagName = tagName || 'div';
+    return props.namespace ? tagName : tagName;
+}
+
+},{}],6:[function(require,module,exports){
+!function(e,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n(e.ultradom={})}(this,function(e){"use strict";function g(e,n){var t={};for(var r in e)t[r]=e[r];for(var r in n)t[r]=n[r];return t}function u(e){return e.currentTarget.events[e.type](e)}function y(e,n,t,r,l){if("key"===n);else if("style"===n)for(var o in g(r,t)){var i=null==t||null==t[o]?"":t[o];"-"===o[0]?e[n].setProperty(o,i):e[n][o]=i}else"o"===n[0]&&"n"===n[1]?(e.events||(e.events={}),(e.events[n=n.slice(2)]=t)?r||e.addEventListener(n,u):e.removeEventListener(n,u)):n in e&&"list"!==n&&!l?e[n]=null==t?"":t:null!=t&&!1!==t&&e.setAttribute(n,t),null!=t&&!1!==t||e.removeAttribute(n)}function b(e,n,t){function r(){e.removeChild(function e(n,t){var r=t.attributes;if(r){for(var l=0;l<t.children.length;l++)e(n.childNodes[l],t.children[l]);r.ondestroy&&r.ondestroy(n)}return n}(n,t))}var l=t.attributes&&t.attributes.onremove;l?l(n,r):r()}function k(e){return e?e.key:null}function w(e,n,t,r,l,o){if(r===t);else if(null==t||t.name!==r.name){var i=function e(n,t,r){var l="string"==typeof n||"number"==typeof n?document.createTextNode(n):(r=r||"svg"===n.name)?document.createElementNS("http://www.w3.org/2000/svg",n.name):document.createElement(n.name),o=n.attributes;if(o){o.oncreate&&t.push(function(){o.oncreate(l)});for(var i=0;i<n.children.length;i++)l.appendChild(e(n.children[i],t,r));for(var u in o)y(l,u,o[u],null,r)}return l}(r,l,o);e.insertBefore(i,n),null!=t&&b(e,n,t),n=i}else if(null==t.name)n.nodeValue=r;else{!function(e,n,t,r,l){for(var o in g(n,t))t[o]!==("value"===o||"checked"===o?e[o]:n[o])&&y(e,o,t[o],n[o],l);t.onupdate&&r.push(function(){t.onupdate(e,n)})}(n,t.attributes,r.attributes,l,o=o||"svg"===r.name);for(var u={},f={},a=[],s=t.children,c=r.children,d=0;d<s.length;d++){a[d]=n.childNodes[d],null!=(h=k(s[d]))&&(u[h]=[a[d],s[d]])}d=0;for(var v=0;v<c.length;){var h=k(s[d]),p=k(c[v]);if(f[h])d++;else if(null==p||p!==k(s[d+1]))if(null==p||t.recycled)null==h&&(w(n,a[d],s[d],c[v],l,o),v++),d++;else{var m=u[p]||[];h===p?(w(n,m[0],m[1],c[v],l,o),d++):m[0]?w(n,n.insertBefore(m[0],a[d]),m[1],c[v],l,o):w(n,a[d],null,c[v],l,o),f[p]=c[v],v++}else null==h&&b(n,a[d],s[d]),d++}for(;d<s.length;)null==k(s[d])&&b(n,a[d],s[d]),d++;for(var d in u)f[d]||b(n,u[d][0],u[d][1])}return n}e.h=function(e,n){for(var t=[],r=[],l=arguments.length;2<l--;)t.push(arguments[l]);for(;t.length;){var o=t.pop();if(o&&o.pop)for(l=o.length;l--;)t.push(o[l]);else null!=o&&!0!==o&&!1!==o&&r.push(o)}return{name:e,attributes:n||{},children:r,key:n&&n.key}},e.render=function(e,n){var t=[],r=n.children[0];for(w(n,r,r&&r.node,e,t).node=e;t.length;)t.pop()()}});
 
 },{}]},{},[3]);

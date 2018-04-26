@@ -1,14 +1,18 @@
 "use strict";
 ///<reference path="./index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-var picodom_1 = require("picodom");
-exports.h = picodom_1.h;
+var ultradom_1 = require("ultradom");
 var dataModEffect_1 = require("./dataModEffect");
 var utils_1 = require("./utils");
 var effectHandler_1 = require("./effectHandler");
+var virtualHyperscript_1 = require("./virtualHyperscript");
+var h = virtualHyperscript_1.default(ultradom_1.h);
+exports.h = h;
 function makeRenderLoop(target, state, renderApp, effectHandlers) {
     if (effectHandlers === void 0) { effectHandlers = []; }
-    var node;
+    if (!target) {
+        throw new Error("Please supply a valid target");
+    }
     var handlersXKind = utils_1.deepMerge({}, {
         dataModRequest: dataModEffect_1.default
     }, effectHandlers.reduce(function (acc, handler) {
@@ -23,8 +27,7 @@ function makeRenderLoop(target, state, renderApp, effectHandlers) {
             state = newState;
             var $frame = renderApp(utils_1.deepMerge({}, state), effectHandler_1.default(bufferedUpdateState, state, handlersXKind), changes);
             if ($frame) {
-                picodom_1.patch(node, $frame, target);
-                node = $frame;
+                ultradom_1.render($frame, target);
             }
             else {
                 // Not yet ready to render
@@ -38,7 +41,7 @@ function makeRenderLoop(target, state, renderApp, effectHandlers) {
 exports.makeRenderLoop = makeRenderLoop;
 var nimble = {
     makeRenderLoop: makeRenderLoop,
-    h: picodom_1.h
+    h: h
 };
 if (window && !window['nimble']) {
     window['nimble'] = nimble;

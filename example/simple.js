@@ -1,4 +1,4 @@
-const target = document.getElementById('#frame');
+const target = document.getElementById('frame');
 
 const {
     makeRenderLoop,

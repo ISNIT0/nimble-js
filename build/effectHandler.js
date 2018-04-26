@@ -3,9 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function effectHandler(done, state, effectHandlers) {
     var affect = function Affect(effects, handler) {
         if (!Array.isArray(effects)) {
+            console.log("Triggering effect: ", effects);
             effects = [effects];
         }
-        console.log("Triggering [" + effects.length + "] effects: ", effects);
+        else {
+            console.log("Triggering [" + effects.length + "] effects: ", effects);
+        }
         var acc = state;
         var dataMods = [];
         var ret = [];

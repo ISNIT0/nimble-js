@@ -1,10 +1,3 @@
-
-interface VNode<Props = {}> {
-    type: string
-    props?: Props
-    children: Array<VNode | string>
-  }
-
 type Effect = {
     kind: string,
     action?: string,

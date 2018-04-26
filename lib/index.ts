@@ -2,7 +2,7 @@
 
 import { h as uH, render, VNode } from 'ultradom';
 import dataModEffectDefinition from './dataModEffect';
-import { bufferWithTime, deepMerge } from './utils';
+import { bufferWithTime, deepMerge, get, set } from './utils';
 import effectHandler from './effectHandler';
 import makeVirtualHyperscript from './virtualHyperscript';
 
@@ -53,7 +53,9 @@ function makeRenderLoop<State>(
 
 const nimble = {
     makeRenderLoop,
-    h
+    h,
+    get,
+    set
 };
 
 export { makeRenderLoop, h };

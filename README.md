@@ -3,6 +3,8 @@
 
 A data and rendering manager, so you can focus on writing awesome VDom.
 
+[![CodeFactor](https://www.codefactor.io/repository/github/isnit0/nimble-js/badge/master)](https://www.codefactor.io/repository/github/isnit0/nimble-js/overview/master)
+
 ## Usage
 
 ```html
